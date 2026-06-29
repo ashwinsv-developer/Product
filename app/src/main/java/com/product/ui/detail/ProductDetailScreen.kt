@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.product.data.model.Product
 import com.product.ui.components.AppTopBar
+import com.product.ui.components.shimmerEffect
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil3.CoilImage
 
@@ -95,11 +96,11 @@ fun ProductDetailContent(product: Product) {
                     modifier = Modifier.fillMaxSize(),
                     imageOptions = ImageOptions(contentScale = ContentScale.Fit),
                     loading = {
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.align(Alignment.Center)
-                            )
-                        }
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .shimmerEffect()
+                        )
                     },
                     failure = { state ->
                         Column(

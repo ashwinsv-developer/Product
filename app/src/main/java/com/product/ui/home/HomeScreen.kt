@@ -26,6 +26,12 @@ import com.product.data.model.Product
 import com.product.ui.components.AppTopBar
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil3.CoilImage
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
+import androidx.compose.ui.unit.sp
+import com.product.ui.components.shimmerEffect
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,6 +74,7 @@ fun HomeScreen(
             LazyRow(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .background(Color.Transparent)
                     .padding(vertical = 8.dp),
                 contentPadding = PaddingValues(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -142,19 +149,54 @@ fun ProductItem(
                 .height(120.dp)
         ) {
             val imageUrl = product.thumbnail
+
             CoilImage(
                 imageModel = { imageUrl },
+
                 modifier = Modifier
-                    .size(100.dp)
+                    .size(120.dp)
                     .clip(RoundedCornerShape(8.dp)),
+
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     contentDescription = product.title
                 ),
+
+                loading = {
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .shimmerEffect()
+                    )
+                },
+
                 failure = { state ->
-                    Log.e("HomeScreen", "Failed to load image: $imageUrl, reason: ${state.reason}")
-                    state.reason?.let { 
-                        Log.e("HomeScreen", "Error message: ${it.message}", it)
+
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.LightGray)
+                    ) {
+
+                        Text(
+                            text = "Failed to load",
+                            fontSize = 12.sp
+                        )
+                    }
+
+                    Log.e(
+                        "HomeScreen",
+                        "Failed to load image: $imageUrl"
+                    )
+
+                    state.reason?.let {
+                        Log.e(
+                            "HomeScreen",
+                            "Error: ${it.message}",
+                            it
+                        )
                     }
                 }
             )
