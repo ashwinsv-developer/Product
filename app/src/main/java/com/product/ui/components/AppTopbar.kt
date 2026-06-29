@@ -36,13 +36,15 @@ fun AppTopBar(
 
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color.White
                 )
 
                 headerText?.let {
                     Text(
                         text = it,
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.White
                     )
                 }
             }
@@ -57,7 +59,8 @@ fun AppTopBar(
                     ) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = "Back",
+                            tint = Color.White
                         )
                     }
                 }
@@ -68,7 +71,8 @@ fun AppTopBar(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Menu,
-                            contentDescription = "Menu"
+                            contentDescription = "Menu",
+                            tint = Color.White
                         )
                     }
                 }
@@ -78,7 +82,7 @@ fun AppTopBar(
         actions = actions,
 
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color(0xFF87CEFA) // Light Sky Blue
+            containerColor = Color(0xFF2196F3)
         )
     )
 }

@@ -58,7 +58,8 @@ fun HomeScreen(
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ExitToApp,
-                            contentDescription = "Logout"
+                            contentDescription = "Logout",
+                            tint = Color.White
                         )
                     }
                 }
@@ -212,18 +213,20 @@ fun ProductItem(
                         text = product.title,
                         style = MaterialTheme.typography.titleMedium,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        color = Color.Black
                     )
                     Text(
                         text = product.brand,
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color.Gray
+                        color = Color.Black
                     )
                     
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = "$${product.price}",
-                            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                            style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                            color = Color.Black
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         val originalPrice = (product.price / (1 - product.discountPercentage / 100)).toInt()
@@ -231,7 +234,7 @@ fun ProductItem(
                             text = "$$originalPrice",
                             style = MaterialTheme.typography.bodySmall.copy(
                                 textDecoration = TextDecoration.LineThrough,
-                                color = Color.Gray
+                                color = Color.Black
                             )
                         )
                         Spacer(modifier = Modifier.width(4.dp))
