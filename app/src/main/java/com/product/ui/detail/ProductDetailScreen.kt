@@ -1,5 +1,6 @@
 package com.product.ui.detail
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -8,8 +9,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -19,30 +18,41 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.product.MainActivity
+import com.product.MainViewModel
 import com.product.data.model.Product
 import com.product.di.ApiResult
 import com.product.ui.components.AppTopBar
 import com.product.ui.components.shimmerEffect
+import com.product.util.Constants
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil3.CoilImage
 
 
 
+@SuppressLint("ContextCastToActivity")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductDetailScreen(
     onBack: () -> Unit,
     viewModel: ProductDetailViewModel = hiltViewModel()
 ) {
+    val activity = LocalContext.current as MainActivity
+
     val uiState by viewModel.uiState.collectAsState()
+    val mainViewModel: MainViewModel = hiltViewModel(activity)
+
 
     Scaffold(
         topBar = {
 
-            AppTopBar("Product Details", onBackClick = onBack, showBackButton = true)
+            AppTopBar(Constants.PRODUCT_DETAILS,
+                headerText = mainViewModel.getUserEmail(),
+                onBackClick = onBack, showBackButton = true)
 
         }
     ) { innerPadding ->
@@ -68,7 +78,7 @@ fun ProductDetailScreen(
                     ) {
                         Text(text = state.exception.toString(), color = MaterialTheme.colorScheme.error)
                         Button(onClick = { viewModel.fetchProductDetails() }) {
-                            Text("Retry")
+                            Text(Constants.RETRY)
                         }
                     }
                 }
@@ -114,7 +124,7 @@ fun ProductDetailContent(product: Product) {
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(text = "Failed to load image")
+                            Text(text = Constants.FAILED_TO_LOAD)
                             Log.e("ProductDetailScreen", "Failed to load image: $imageUrl, reason: ${state.reason}")
                             state.reason?.let { 
                                 Log.e("ProductDetailScreen", "Error message: ${it.message}", it)
@@ -175,7 +185,7 @@ fun ProductDetailContent(product: Product) {
             Spacer(modifier = Modifier.height(16.dp))
             
             Text(
-                text = "Description",
+                text = Constants.Description,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.SemiBold
             )
@@ -186,10 +196,10 @@ fun ProductDetailContent(product: Product) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            DetailItem(label = "Category", value = product.category)
-            DetailItem(label = "Brand", value = product.brand)
-            DetailItem(label = "Stock", value = product.stock.toString())
-            DetailItem(label = "Rating", value = "★ ${product.rating}")
+            DetailItem(label = Constants.Category, value = product.category)
+            DetailItem(label = Constants.Brand, value = product.brand)
+            DetailItem(label = Constants.Stock, value = product.stock.toString())
+            DetailItem(label = Constants.Rating, value = "★ ${product.rating}")
         }
     }
 }

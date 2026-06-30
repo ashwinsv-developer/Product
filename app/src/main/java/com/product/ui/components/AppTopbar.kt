@@ -82,7 +82,7 @@ fun AppTopBar(
         actions = actions,
 
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color(0xFF2196F3)
+          containerColor = Color(0xFF6C3BFF),
         )
     )
 }

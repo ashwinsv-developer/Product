@@ -36,7 +36,9 @@ import androidx.compose.ui.unit.sp
 import com.product.MainActivity
 import com.product.MainViewModel
 import com.product.di.ApiResult
+import com.product.ui.components.CategoryChip
 import com.product.ui.components.shimmerEffect
+import com.product.util.Constants
 
 @SuppressLint("ContextCastToActivity")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,7 +71,7 @@ fun HomeScreen(
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ExitToApp,
-                            contentDescription = "Logout",
+                            contentDescription = Constants.LOGOUT,
                             tint = Color.White
                         )
                     }
@@ -92,10 +94,12 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(categories) { category ->
-                    FilterChip(
+                    CategoryChip(
+                        category = category,
                         selected = selectedCategory == category,
-                        onClick = { viewModel.selectCategory(category) },
-                        label = { Text(category) }
+                        onClick = {
+                            viewModel.selectCategory(category)
+                        }
                     )
                 }
             }
@@ -118,7 +122,7 @@ fun HomeScreen(
                             Text(text = "Error: ${state.exception}", color = MaterialTheme.colorScheme.error)
                             Spacer(modifier = Modifier.height(8.dp))
                             Button(onClick = { viewModel.fetchProducts() }) {
-                                Text("Retry")
+                                Text(Constants.RETRY)
                             }
                         }
                     }
@@ -193,7 +197,7 @@ fun ProductItem(
                     ) {
 
                         Text(
-                            text = "Failed to load",
+                            text = Constants.FAILED_TO_LOAD,
                             fontSize = 12.sp
                         )
                     }
@@ -288,9 +292,9 @@ fun RatingBar(rating: Double) {
 @Composable
 fun StockStatus(stock: Int) {
     val (statusText, color) = when {
-        stock > 50 -> "Available" to Color(0xFF2E7D32) // Green
-        stock in 1..50 -> "Limited" to Color(0xFFEF6C00) // Orange
-        else -> "Unavailable" to Color(0xFFC62828) // Red
+        stock > 50 -> Constants.Available to Color(0xFF2E7D32) // Green
+        stock in 1..50 -> Constants.Limited to Color(0xFFEF6C00) // Orange
+        else -> Constants.UnAvailable to Color(0xFFC62828) // Red
     }
 
     Text(
