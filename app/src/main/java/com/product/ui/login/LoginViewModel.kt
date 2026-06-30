@@ -51,7 +51,11 @@ class LoginViewModel @Inject constructor(
     private fun validateEmail(email: String): Boolean {
         return if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             true
-        } else {
+        } else if( email.isEmpty()) {
+            emailError = "Email cannot be empty"
+            false
+        }
+        else {
             emailError = "Invalid email format"
             false
         }
