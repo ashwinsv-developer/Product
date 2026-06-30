@@ -7,7 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.product.data.SessionManager
 import com.product.data.model.Product
-import com.product.data.repository.ProductRepository
+import com.product.data.repository.product.ProductRepository
+import com.product.di.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,18 +16,28 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val sessionManager: SessionManager,
     private val productRepository: ProductRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<HomeUiState>(HomeUiState.Loading)
-    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+    private val _uiState =
+        MutableStateFlow<ApiResult<List<Product>>>(
+            ApiResult.Loading
+        )
 
-    private var allProducts: List<Product> = emptyList()
-    
-    var categories by mutableStateOf<List<String>>(emptyList())
+    val uiState:
+            StateFlow<ApiResult<List<Product>>> =
+        _uiState.asStateFlow()
+
+    private var allProducts: List<Product> =
+        emptyList()
+
+    var categories by mutableStateOf<List<String>>(
+        emptyList()
+    )
         private set
 
     var selectedCategory by mutableStateOf("All")
@@ -37,32 +48,69 @@ class HomeViewModel @Inject constructor(
     }
 
     fun fetchProducts() {
-        viewModelScope.launch {
-            _uiState.value = HomeUiState.Loading
-            productRepository.getProducts().collect { result ->
-                result.onSuccess { products ->
-                    allProducts = products
-                    categories = listOf("All") + products.map { it.category }.distinct().sorted()
-                    filterProducts()
-                }.onFailure { error ->
-                    _uiState.value = HomeUiState.Error(error.message ?: "Unknown Error")
-                }
-            }
-        }
-    }
 
-    fun selectCategory(category: String) {
-        selectedCategory = category
-        filterProducts()
+        viewModelScope.launch {
+
+            productRepository
+                .getProducts()
+                .collect { result ->
+
+                    when (result) {
+
+                        is ApiResult.Loading -> {
+                            _uiState.value =
+                                ApiResult.Loading
+                        }
+
+                        is ApiResult.Success -> {
+
+                            allProducts =
+                                result.data
+
+                            categories =
+                                listOf("All") +
+                                        result.data
+                                            .map {
+                                                it.category
+                                            }
+                                            .distinct()
+                                            .sorted()
+
+                            filterProducts()
+                        }
+
+                        is ApiResult.Error -> {
+
+                            _uiState.value =
+                                ApiResult.Error(
+                                    result.exception
+                                )
+                        }
+                    }
+                }
+        }
     }
 
     private fun filterProducts() {
-        val filtered = if (selectedCategory == "All") {
-            allProducts
-        } else {
-            allProducts.filter { it.category == selectedCategory }
-        }
-        _uiState.value = HomeUiState.Success(filtered)
+
+        val filtered =
+            if (selectedCategory == "All") {
+                allProducts
+            } else {
+                allProducts.filter {
+                    it.category == selectedCategory
+                }
+            }
+
+        _uiState.value =
+            ApiResult.Success(filtered)
+    }
+
+    fun selectCategory(
+        category: String
+    ) {
+        selectedCategory = category
+        filterProducts()
     }
 
     fun getUserEmail(): String {
@@ -74,8 +122,3 @@ class HomeViewModel @Inject constructor(
     }
 }
 
-sealed class HomeUiState {
-    object Loading : HomeUiState()
-    data class Success(val products: List<Product>) : HomeUiState()
-    data class Error(val message: String) : HomeUiState()
-}

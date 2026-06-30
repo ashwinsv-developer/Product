@@ -31,6 +31,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.ui.unit.sp
+import com.product.di.ApiResult
 import com.product.ui.components.shimmerEffect
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -90,21 +91,21 @@ fun HomeScreen(
             }
 
             when (val state = uiState) {
-                is HomeUiState.Loading -> {
+                is ApiResult.Loading -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator()
                     }
                 }
-                is HomeUiState.Success -> {
+                is ApiResult.Success -> {
                     ProductList(
-                        products = state.products,
+                        products = state.data,
                         onProductClick = onProductClick
                     )
                 }
-                is HomeUiState.Error -> {
+                is ApiResult.Error -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(text = "Error: ${state.message}", color = MaterialTheme.colorScheme.error)
+                            Text(text = "Error: ${state.exception}", color = MaterialTheme.colorScheme.error)
                             Spacer(modifier = Modifier.height(8.dp))
                             Button(onClick = { viewModel.fetchProducts() }) {
                                 Text("Retry")

@@ -1,8 +1,11 @@
 package com.product.di
 
 import com.product.data.remote.ProductApi
-import com.product.data.repository.ProductRepository
-import com.product.data.repository.ProductRepositoryImpl
+import com.product.data.repository.product.ProductRepository
+import com.product.data.repository.product.ProductRepositoryImpl
+import com.product.data.repository.productDetail.ProductDetailRepository
+import com.product.data.repository.productDetail.ProductDetailRepositoryImpl
+import com.product.network.RetryInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,6 +33,7 @@ object NetworkModule {
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
+            .addInterceptor(RetryInterceptor(3))
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             })
@@ -57,5 +61,11 @@ object NetworkModule {
     @Singleton
     fun provideProductRepository(api: ProductApi): ProductRepository {
         return ProductRepositoryImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideProductDetailRepository(api: ProductApi): ProductDetailRepository {
+        return ProductDetailRepositoryImpl(api)
     }
 }
