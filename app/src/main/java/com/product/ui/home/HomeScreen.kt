@@ -1,4 +1,5 @@
 package com.product.ui.home
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -30,10 +31,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
+import com.product.MainActivity
+import com.product.MainViewModel
 import com.product.di.ApiResult
 import com.product.ui.components.shimmerEffect
 
+@SuppressLint("ContextCastToActivity")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -41,10 +46,15 @@ fun HomeScreen(
     onProductClick: (Int) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-    val email = viewModel.getUserEmail()
+
     val uiState by viewModel.uiState.collectAsState()
     val categories = viewModel.categories
     val selectedCategory = viewModel.selectedCategory
+
+    val activity = LocalContext.current as MainActivity
+
+    val mainViewModel: MainViewModel = hiltViewModel(activity)
+    val email = mainViewModel.getUserEmail()
 
     Scaffold(
         topBar = {
@@ -54,7 +64,7 @@ fun HomeScreen(
                 showBackButton = false,
                 actions = {
                     IconButton(onClick = {
-                        viewModel.logout()
+                        mainViewModel.logout()
                         onLogout()
                     }) {
                         Icon(

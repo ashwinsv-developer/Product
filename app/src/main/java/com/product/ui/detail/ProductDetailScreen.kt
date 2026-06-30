@@ -23,10 +23,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.product.data.model.Product
+import com.product.di.ApiResult
 import com.product.ui.components.AppTopBar
 import com.product.ui.components.shimmerEffect
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil3.CoilImage
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,19 +51,22 @@ fun ProductDetailScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+
+
+
             when (val state = uiState) {
-                is ProductDetailUiState.Loading -> {
+                is ApiResult.Loading -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
-                is ProductDetailUiState.Success -> {
-                    ProductDetailContent(product = state.product)
+                is ApiResult.Success -> {
+                    ProductDetailContent(product = state.data)
                 }
-                is ProductDetailUiState.Error -> {
+                is ApiResult.Error -> {
                     Column(
                         modifier = Modifier.align(Alignment.Center),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = state.message, color = MaterialTheme.colorScheme.error)
+                        Text(text = state.exception.toString(), color = MaterialTheme.colorScheme.error)
                         Button(onClick = { viewModel.fetchProductDetails() }) {
                             Text("Retry")
                         }

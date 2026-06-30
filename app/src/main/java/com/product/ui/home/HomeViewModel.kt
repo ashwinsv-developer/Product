@@ -1,11 +1,9 @@
 package com.product.ui.home
-
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.product.data.SessionManager
 import com.product.data.model.Product
 import com.product.data.repository.product.ProductRepository
 import com.product.di.ApiResult
@@ -19,9 +17,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val sessionManager: SessionManager,
     private val productRepository: ProductRepository
 ) : ViewModel() {
+
 
     private val _uiState =
         MutableStateFlow<ApiResult<List<Product>>>(
@@ -111,14 +109,6 @@ class HomeViewModel @Inject constructor(
     ) {
         selectedCategory = category
         filterProducts()
-    }
-
-    fun getUserEmail(): String {
-        return sessionManager.getEmail() ?: "Unknown"
-    }
-
-    fun logout() {
-        sessionManager.clearSession()
     }
 }
 
