@@ -64,6 +64,9 @@ fun HomeScreen(
                 title = "Products",
                 headerText = email,
                 showBackButton = false,
+                onMenuClick = {
+
+                },
                 actions = {
                     IconButton(onClick = {
                         mainViewModel.logout()

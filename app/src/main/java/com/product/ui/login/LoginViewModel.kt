@@ -49,13 +49,13 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun validateEmail(email: String): Boolean {
-        return if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\$".toRegex()
+        return if (email.isNotEmpty() && email.matches(emailRegex)) {
             true
-        } else if( email.isEmpty()) {
+        } else if (email.isEmpty()) {
             emailError = "Email cannot be empty"
             false
-        }
-        else {
+        } else {
             emailError = "Invalid email format"
             false
         }

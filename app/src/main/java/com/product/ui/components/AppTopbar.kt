@@ -25,21 +25,17 @@ fun AppTopBar(
     showBackButton: Boolean = false,
     showMenuButton: Boolean = false,
     onBackClick: () -> Unit = {},
-    onMenuClick: () -> Unit = {},
+    onMenuClick: () -> Unit,
     actions: @Composable RowScope.() -> Unit = {}
 ) {
-
     TopAppBar(
         title = {
-
             Column {
-
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleLarge,
                     color = Color.White
                 )
-
                 headerText?.let {
                     Text(
                         text = it,
