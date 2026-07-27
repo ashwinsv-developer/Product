@@ -25,7 +25,7 @@ fun AppTopBar(
     showBackButton: Boolean = false,
     showMenuButton: Boolean = false,
     onBackClick: () -> Unit = {},
-    onMenuClick: () -> Unit,
+    onMenuClick: () -> Unit ={},
     actions: @Composable RowScope.() -> Unit = {}
 ) {
     TopAppBar(

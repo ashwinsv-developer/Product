@@ -1,0 +1,12 @@
+package com.product.data.local
+
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import com.product.data.local.dao.MovieDao
+import com.product.data.local.entity.GenreEntity
+import com.product.data.local.entity.MovieEntity
+
+@Database(entities = [MovieEntity::class, GenreEntity::class], version = 1, exportSchema = false)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun movieDao(): MovieDao
+}
