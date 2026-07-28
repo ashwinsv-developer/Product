@@ -17,6 +17,7 @@ import com.product.util.Constants
 @Composable
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
+    onNavigateToCreateUser: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val email = viewModel.email
@@ -37,6 +38,11 @@ fun LoginScreen(
             .padding(24.dp),
         contentAlignment = Alignment.Center
     ) {
+
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
         ElevatedCard(
             modifier = Modifier.fillMaxWidth(),
@@ -152,5 +158,32 @@ fun LoginScreen(
 
             }
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Row(   verticalAlignment = Alignment.CenterVertically) {
+
+            Text(
+
+                text = Constants.new_user_login,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+
+            TextButton(onClick = { onNavigateToCreateUser() }) {
+                Text(
+                    text = Constants.signIn,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color(0xFF6C3BFF)
+                )
+            }
+        }
+
+
+
+        }
+
+
     }
 }

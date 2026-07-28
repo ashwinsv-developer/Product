@@ -10,6 +10,9 @@ object Login
 object Home
 
 @Serializable
+object CreateUser
+
+@Serializable
 data class ProductDetail(
     val productId: Int
 )

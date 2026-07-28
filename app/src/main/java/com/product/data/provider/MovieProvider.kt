@@ -7,12 +7,21 @@ import android.content.UriMatcher
 import android.database.Cursor
 import android.net.Uri
 import com.product.data.local.AppDatabase
-import androidx.room.Room
 import com.product.data.local.entity.MovieEntity
 import com.product.data.local.entity.GenreEntity
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.runBlocking
 
 class MovieProvider : ContentProvider() {
+
+    @EntryPoint
+    @InstallIn(SingletonComponent::class)
+    interface MovieProviderEntryPoint {
+        fun getDatabase(): AppDatabase
+    }
 
     companion object {
         private const val MOVIES = 100
@@ -27,10 +36,12 @@ class MovieProvider : ContentProvider() {
     private lateinit var database: AppDatabase
 
     override fun onCreate(): Boolean {
-        database = Room.databaseBuilder(
-            context!!,
-            AppDatabase::class.java, "movie_db"
-        ).build()
+        val appContext = context?.applicationContext ?: return false
+        val hiltEntryPoint = EntryPointAccessors.fromApplication(
+            appContext,
+            MovieProviderEntryPoint::class.java
+        )
+        database = hiltEntryPoint.getDatabase()
         return true
     }
 

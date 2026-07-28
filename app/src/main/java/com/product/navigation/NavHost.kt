@@ -8,6 +8,7 @@ import androidx.navigation.toRoute
 import com.product.ui.detail.ProductDetailScreen
 import com.product.ui.home.HomeScreen
 import com.product.ui.login.LoginScreen
+import com.product.ui.createUser.CreateUser
 
 @Composable
 fun AppNavGraph(
@@ -24,6 +25,24 @@ fun AppNavGraph(
                 onLoginSuccess = {
                     navController.navigate(Home) {
                         popUpTo<Login> {
+                            inclusive = true
+                        }
+                    }
+                },
+                onNavigateToCreateUser = {
+                    navController.navigate(CreateUser)
+                }
+            )
+        }
+
+        composable<CreateUser> {
+            CreateUser(
+                onBack = {
+                    navController.popBackStack()
+                },
+                onSuccess = {
+                    navController.navigate(Home) {
+                        popUpTo<CreateUser> {
                             inclusive = true
                         }
                     }

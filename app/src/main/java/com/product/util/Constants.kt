@@ -34,6 +34,10 @@ object Constants {
     const val Rating = "Rating"
     const val Description = "Description"
 
+    const val new_user_login ="New User? Din't have an account? "
+
+    const val signIn= "Sign In"
+
 
 
 }
