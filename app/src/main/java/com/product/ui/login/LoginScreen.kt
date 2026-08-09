@@ -179,11 +179,6 @@ fun LoginScreen(
                 )
             }
         }
-
-
-
         }
-
-
     }
 }

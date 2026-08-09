@@ -17,4 +17,7 @@ interface UserDao {
 
     @Query("SELECT * FROM users")
     fun getAllUsers(): Flow<List<UserEntity>>
+
+    @Query("SELECT * FROM users WHERE age = :age")
+    fun getUsersByAge(age: Int): Flow<List<UserEntity>>
 }

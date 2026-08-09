@@ -12,4 +12,5 @@ data class UserEntity(
     val occupation: String ,
     val password: String,
     val confirmPassword: String,
+    val age: Int = 0
 )

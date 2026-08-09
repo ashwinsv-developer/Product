@@ -16,7 +16,10 @@ class LoginScreenTest {
 
     private lateinit var sessionManager: SessionManager
     private var loginSuccessCalled = false
+    private var navigateToCreateUserCalled = false
+
     private val onLoginSuccess: () -> Unit = { loginSuccessCalled = true }
+    private val onNavigateToCreateUser: () -> Unit = { navigateToCreateUserCalled = true }
 
     @Before
     fun setup() {
@@ -24,6 +27,7 @@ class LoginScreenTest {
         sessionManager = SessionManager(context)
         sessionManager.clearSession()
         loginSuccessCalled = false
+        navigateToCreateUserCalled = false
     }
 
     @Test
@@ -31,6 +35,7 @@ class LoginScreenTest {
         composeTestRule.setContent {
             LoginScreen(
                 onLoginSuccess = onLoginSuccess,
+                onNavigateToCreateUser = onNavigateToCreateUser,
                 viewModel = LoginViewModel(sessionManager)
             )
         }
@@ -39,6 +44,7 @@ class LoginScreenTest {
         composeTestRule.onNodeWithText(Constants.EMAIL).assertIsDisplayed()
         composeTestRule.onNodeWithText(Constants.PASSWORD).assertIsDisplayed()
         composeTestRule.onNodeWithText(Constants.LOGIN).assertIsDisplayed()
+        composeTestRule.onNodeWithText(Constants.signIn).assertIsDisplayed()
     }
 
     @Test
@@ -46,6 +52,7 @@ class LoginScreenTest {
         composeTestRule.setContent {
             LoginScreen(
                 onLoginSuccess = onLoginSuccess,
+                onNavigateToCreateUser = onNavigateToCreateUser,
                 viewModel = LoginViewModel(sessionManager)
             )
         }
@@ -64,12 +71,14 @@ class LoginScreenTest {
         composeTestRule.setContent {
             LoginScreen(
                 onLoginSuccess = onLoginSuccess,
+                onNavigateToCreateUser = onNavigateToCreateUser,
                 viewModel = LoginViewModel(sessionManager)
             )
         }
 
         composeTestRule.onNodeWithText(Constants.LOGIN).performClick()
 
+        // Match error messages from LoginViewModel.kt
         composeTestRule.onNodeWithText("Email cannot be empty").assertIsDisplayed()
         composeTestRule.onNodeWithText("Password cannot be empty").assertIsDisplayed()
     }
@@ -79,6 +88,7 @@ class LoginScreenTest {
         composeTestRule.setContent {
             LoginScreen(
                 onLoginSuccess = onLoginSuccess,
+                onNavigateToCreateUser = onNavigateToCreateUser,
                 viewModel = LoginViewModel(sessionManager)
             )
         }
@@ -93,5 +103,21 @@ class LoginScreenTest {
         assert(loginSuccessCalled)
         assert(sessionManager.isLoggedIn())
         assert(sessionManager.getEmail() == email)
+    }
+
+    @Test
+    fun loginScreen_ClickSignIn_NavigatesToCreateUser() {
+        composeTestRule.setContent {
+            LoginScreen(
+                onLoginSuccess = onLoginSuccess,
+                onNavigateToCreateUser = onNavigateToCreateUser,
+                viewModel = LoginViewModel(sessionManager)
+            )
+        }
+
+        // Clicking the "Sign In" link (Constants.signIn)
+        composeTestRule.onNodeWithText(Constants.signIn).performClick()
+
+        assert(navigateToCreateUserCalled)
     }
 }

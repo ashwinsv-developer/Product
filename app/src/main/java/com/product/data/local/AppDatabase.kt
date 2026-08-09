@@ -8,7 +8,7 @@ import com.product.data.local.entity.GenreEntity
 import com.product.data.local.entity.MovieEntity
 import com.product.data.local.entity.UserEntity
 
-@Database(entities = [MovieEntity::class, GenreEntity::class, UserEntity::class], version = 1, exportSchema = false)
+@Database(entities = [MovieEntity::class, GenreEntity::class, UserEntity::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun movieDao(): MovieDao
     abstract fun userDao(): UserDao

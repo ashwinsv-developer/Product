@@ -28,16 +28,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ProductTheme {
-
                 val navController = rememberNavController()
-
                 val startDestination =
                     if (sessionManager.isLoggedIn()) {
                         Home
                     } else {
                         Login
                     }
-
                 AppNavGraph(
                     navController = navController,
                     startDestination = startDestination
