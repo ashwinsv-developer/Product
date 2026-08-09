@@ -24,6 +24,7 @@ hiltNavigationCompose = "1.2.0"
 
 ksp = "2.0.21-1.0.28"
 room = "2.6.1"
+datastore = "1.1.1"
 coil = "3.0.0"
 landscapist = "2.4.4"
 
@@ -90,6 +91,7 @@ coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version
 landscapist-coil = { group = "com.github.skydoves", name = "landscapist-coil3", version.ref = "landscapist" }
 landscapist-animation = { group = "com.github.skydoves", name = "landscapist-animation", version.ref = "landscapist" }
 landscapist-placeholder = { group = "com.github.skydoves", name = "landscapist-placeholder", version.ref = "landscapist" }
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 [plugins]
 
 android-application = { id = "com.android.application", version.ref = "agp" }

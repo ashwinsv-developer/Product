@@ -5,7 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.compose.rememberNavController
 import com.product.data.SessionManager
 import com.product.navigation.AppNavGraph
@@ -28,9 +29,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ProductTheme {
+                val isLoggedIn by sessionManager.isLoggedInFlow.collectAsState(initial = false)
                 val navController = rememberNavController()
                 val startDestination =
-                    if (sessionManager.isLoggedIn()) {
+                    if (isLoggedIn) {
                         Home
                     } else {
                         Login

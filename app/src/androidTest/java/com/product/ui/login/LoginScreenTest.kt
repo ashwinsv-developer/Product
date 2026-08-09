@@ -5,6 +5,8 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.test.platform.app.InstrumentationRegistry
 import com.product.data.SessionManager
 import com.product.util.Constants
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -25,7 +27,9 @@ class LoginScreenTest {
     fun setup() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         sessionManager = SessionManager(context)
-        sessionManager.clearSession()
+        runBlocking {
+            sessionManager.clearSession()
+        }
         loginSuccessCalled = false
         navigateToCreateUserCalled = false
     }
@@ -101,8 +105,10 @@ class LoginScreenTest {
         composeTestRule.onNodeWithText(Constants.LOGIN).performClick()
 
         assert(loginSuccessCalled)
-        assert(sessionManager.isLoggedIn())
-        assert(sessionManager.getEmail() == email)
+        runBlocking {
+            assert(sessionManager.isLoggedInFlow.first())
+            assert(sessionManager.emailFlow.first() == email)
+        }
     }
 
     @Test

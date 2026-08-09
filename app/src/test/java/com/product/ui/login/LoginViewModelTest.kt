@@ -1,6 +1,7 @@
 package com.product.ui.login
 
 import com.product.data.SessionManager
+import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Assert.assertEquals
@@ -82,7 +83,7 @@ class LoginViewModelTest {
         
         viewModel.login()
         
-        verify { sessionManager.saveSession(validEmail) }
+        coVerify { sessionManager.saveSession(validEmail) }
         assertTrue(viewModel.isSuccess)
         assertNull(viewModel.emailError)
         assertNull(viewModel.passwordError)
