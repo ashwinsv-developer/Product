@@ -1,6 +1,8 @@
 package com.product.ui.home
+
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,6 +11,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -18,27 +21,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.product.data.model.Product
-import com.product.ui.components.AppTopBar
-import com.skydoves.landscapist.ImageOptions
-import com.skydoves.landscapist.coil3.CoilImage
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.product.MainActivity
 import com.product.MainViewModel
+import com.product.data.model.Product
 import com.product.di.ApiResult
+import com.product.ui.components.AppTopBar
 import com.product.ui.components.CategoryChip
 import com.product.ui.components.shimmerEffect
 import com.product.util.Constants
+import com.product.util.NotificationHelper
+import com.skydoves.landscapist.ImageOptions
+import com.skydoves.landscapist.coil3.CoilImage
 
 @SuppressLint("ContextCastToActivity")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,7 +56,9 @@ fun HomeScreen(
     val activity = LocalContext.current as MainActivity
 
     val mainViewModel: MainViewModel = hiltViewModel(activity)
-    val email = mainViewModel.getUserEmail()
+    val email by mainViewModel.userEmail.collectAsState()
+    val usageMinutes by mainViewModel.usageMinutes.collectAsState()
+    val context = LocalContext.current
 
     Scaffold(
         topBar = {
@@ -68,6 +70,15 @@ fun HomeScreen(
 
                 },
                 actions = {
+                    IconButton(onClick = {
+                        NotificationHelper.showUsageNotification(context, usageMinutes)
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Notifications,
+                            contentDescription = "Usage Notification",
+                            tint = Color.White
+                        )
+                    }
                     IconButton(onClick = {
                         mainViewModel.logout()
                         onLogout()

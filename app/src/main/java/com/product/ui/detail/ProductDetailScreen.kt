@@ -45,13 +45,14 @@ fun ProductDetailScreen(
 
     val uiState by viewModel.uiState.collectAsState()
     val mainViewModel: MainViewModel = hiltViewModel(activity)
+    val email by mainViewModel.userEmail.collectAsState()
 
 
     Scaffold(
         topBar = {
 
             AppTopBar(Constants.PRODUCT_DETAILS,
-                headerText = mainViewModel.getUserEmail(),
+                headerText = email,
                 onBackClick = onBack, showBackButton = true)
 
         }

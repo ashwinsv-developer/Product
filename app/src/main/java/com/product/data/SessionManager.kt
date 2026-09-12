@@ -5,6 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -22,12 +23,14 @@ class SessionManager @Inject constructor(
     companion object {
         private val KEY_EMAIL = stringPreferencesKey("user_email")
         private val KEY_IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
+        private val KEY_USAGE_MINUTES = intPreferencesKey("usage_minutes")
     }
 
     suspend fun saveSession(email: String) {
         context.dataStore.edit { preferences ->
             preferences[KEY_EMAIL] = email
             preferences[KEY_IS_LOGGED_IN] = true
+            preferences[KEY_USAGE_MINUTES] = 0
         }
     }
 
@@ -37,6 +40,17 @@ class SessionManager @Inject constructor(
 
     val isLoggedInFlow: Flow<Boolean> = context.dataStore.data.map { preferences ->
         preferences[KEY_IS_LOGGED_IN] ?: false
+    }
+
+    val usageMinutesFlow: Flow<Int> = context.dataStore.data.map { preferences ->
+        preferences[KEY_USAGE_MINUTES] ?: 0
+    }
+
+    suspend fun incrementUsage(minutes: Int) {
+        context.dataStore.edit { preferences ->
+            val current = preferences[KEY_USAGE_MINUTES] ?: 0
+            preferences[KEY_USAGE_MINUTES] = current + minutes
+        }
     }
 
     suspend fun clearSession() {

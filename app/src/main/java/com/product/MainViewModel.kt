@@ -22,6 +22,13 @@ class MainViewModel @Inject constructor(val sessionManager: SessionManager) : Vi
             initialValue = "Unknown"
         )
 
+    val usageMinutes: StateFlow<Int> = sessionManager.usageMinutesFlow
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = 0
+        )
+
     fun logout() {
         viewModelScope.launch {
             sessionManager.clearSession()

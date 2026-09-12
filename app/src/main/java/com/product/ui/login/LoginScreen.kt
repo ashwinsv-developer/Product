@@ -12,6 +12,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.product.util.Constants
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.map
 
 
 @Composable
@@ -25,6 +27,14 @@ fun LoginScreen(
     val emailError = viewModel.emailError
     val passwordError = viewModel.passwordError
     val isSuccess = viewModel.isSuccess
+
+    // Using snapshotFlow to observe email changes reactively
+    LaunchedEffect(Unit) {
+        snapshotFlow { viewModel.email }
+            .collect { _ ->
+                // You can perform side effects or reactive validation here
+            }
+    }
 
     LaunchedEffect(isSuccess) {
         if (isSuccess) {
@@ -78,8 +88,12 @@ fun LoginScreen(
                     modifier = Modifier.height(32.dp)
                 )
 
+                val processedEmail by remember(viewModel) {
+                    snapshotFlow { viewModel.email }.map { it.lowercase() }
+                }.collectAsState(initial = viewModel.email)
+
                 OutlinedTextField(
-                    value = email,
+                    value = processedEmail,
                     onValueChange = {
                         viewModel.onEmailChange(it)
                     },
