@@ -1,5 +1,6 @@
 package com.product.ui.main
 
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -31,7 +32,8 @@ fun MainScreen(
     Scaffold(
         bottomBar = {
             BottomNavigationBar(navController)
-        }
+        },
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { innerPadding ->
         NavHost(
             navController = navController,
