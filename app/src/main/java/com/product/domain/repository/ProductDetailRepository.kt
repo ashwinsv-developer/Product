@@ -1,12 +1,10 @@
 package com.product.domain.repository
 
-import com.product.data.model.Product
-import com.product.di.ApiResult
-import kotlinx.coroutines.flow.Flow
+import com.product.domain.model.Product
 
+/**
+ * Domain-level repository interface for Product details.
+ */
 interface ProductDetailRepository {
-
-    fun getProductDetails(
-        productId: Int
-    ): Flow<ApiResult<Product>>
+    suspend fun getProductDetails(productId: Int): Result<Product>
 }

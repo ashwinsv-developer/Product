@@ -30,8 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.product.MainActivity
 import com.product.MainViewModel
-import com.product.data.model.Product
-import com.product.di.ApiResult
+import com.product.domain.model.Product
 import com.product.ui.components.AppTopBar
 import com.product.ui.components.CategoryChip
 import com.product.ui.components.shimmerEffect
@@ -48,13 +47,11 @@ fun HomeScreen(
     onProductClick: (Int) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-
     val uiState by viewModel.uiState.collectAsState()
     val categories = viewModel.categories
     val selectedCategory = viewModel.selectedCategory
 
     val activity = LocalContext.current as MainActivity
-
     val mainViewModel: MainViewModel = hiltViewModel(activity)
     val email by mainViewModel.userEmail.collectAsState()
     val usageMinutes by mainViewModel.usageMinutes.collectAsState()
@@ -66,9 +63,6 @@ fun HomeScreen(
                 title = "Products",
                 headerText = email,
                 showBackButton = false,
-                onMenuClick = {
-
-                },
                 actions = {
                     IconButton(onClick = {
                         NotificationHelper.showUsageNotification(context, usageMinutes)
@@ -98,7 +92,6 @@ fun HomeScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            // Category Filters
             LazyRow(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -119,21 +112,21 @@ fun HomeScreen(
             }
 
             when (val state = uiState) {
-                is ApiResult.Loading -> {
+                is HomeUiState.Loading -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator()
                     }
                 }
-                is ApiResult.Success -> {
+                is HomeUiState.Success -> {
                     ProductList(
-                        products = state.data,
+                        products = state.products,
                         onProductClick = onProductClick
                     )
                 }
-                is ApiResult.Error -> {
+                is HomeUiState.Error -> {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(text = "Error: ${state.exception}", color = MaterialTheme.colorScheme.error)
+                            Text(text = "Error: ${state.message}", color = MaterialTheme.colorScheme.error)
                             Spacer(modifier = Modifier.height(8.dp))
                             Button(onClick = { viewModel.fetchProducts() }) {
                                 Text(Constants.RETRY)
@@ -182,52 +175,33 @@ fun ProductItem(
 
             CoilImage(
                 imageModel = { imageUrl },
-
                 modifier = Modifier
                     .size(120.dp)
                     .clip(RoundedCornerShape(8.dp)),
-
                 imageOptions = ImageOptions(
                     contentScale = ContentScale.Crop,
                     contentDescription = product.title
                 ),
-
                 loading = {
-
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
                             .shimmerEffect()
                     )
                 },
-
                 failure = { state ->
-
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
                             .fillMaxSize()
                             .background(Color.LightGray)
                     ) {
-
                         Text(
                             text = Constants.FAILED_TO_LOAD,
                             fontSize = 12.sp
                         )
                     }
-
-                    Log.e(
-                        "HomeScreen",
-                        "Failed to load image: $imageUrl"
-                    )
-
-                    state.reason?.let {
-                        Log.e(
-                            "HomeScreen",
-                            "Error: ${it.message}",
-                            it
-                        )
-                    }
+                    Log.e("HomeScreen", "Failed to load image: $imageUrl")
                 }
             )
 
@@ -258,7 +232,11 @@ fun ProductItem(
                             color = Color.Black
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        val originalPrice = (product.price / (1 - product.discountPercentage / 100)).toInt()
+                        val originalPrice = if (product.discountPercentage < 100) {
+                            (product.price / (1 - product.discountPercentage / 100)).toInt()
+                        } else {
+                            product.price
+                        }
                         Text(
                             text = "$$originalPrice",
                             style = MaterialTheme.typography.bodySmall.copy(
@@ -306,9 +284,9 @@ fun RatingBar(rating: Double) {
 @Composable
 fun StockStatus(stock: Int) {
     val (statusText, color) = when {
-        stock > 50 -> Constants.Available to Color(0xFF2E7D32) // Green
-        stock in 1..50 -> Constants.Limited to Color(0xFFEF6C00) // Orange
-        else -> Constants.UnAvailable to Color(0xFFC62828) // Red
+        stock > 50 -> Constants.Available to Color(0xFF2E7D32)
+        stock in 1..50 -> Constants.Limited to Color(0xFFEF6C00)
+        else -> Constants.UnAvailable to Color(0xFFC62828)
     }
 
     Text(

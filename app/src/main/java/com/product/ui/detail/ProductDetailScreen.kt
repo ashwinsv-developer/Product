@@ -24,15 +24,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.product.MainActivity
 import com.product.MainViewModel
-import com.product.data.model.Product
-import com.product.di.ApiResult
+import com.product.domain.model.Product
 import com.product.ui.components.AppTopBar
 import com.product.ui.components.shimmerEffect
 import com.product.util.Constants
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil3.CoilImage
-
-
 
 @SuppressLint("ContextCastToActivity")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,14 +44,14 @@ fun ProductDetailScreen(
     val mainViewModel: MainViewModel = hiltViewModel(activity)
     val email by mainViewModel.userEmail.collectAsState()
 
-
     Scaffold(
         topBar = {
-
-            AppTopBar(Constants.PRODUCT_DETAILS,
+            AppTopBar(
+                title = Constants.PRODUCT_DETAILS,
                 headerText = email,
-                onBackClick = onBack, showBackButton = true)
-
+                onBackClick = onBack,
+                showBackButton = true
+            )
         }
     ) { innerPadding ->
         Box(
@@ -62,22 +59,19 @@ fun ProductDetailScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-
-
-
             when (val state = uiState) {
-                is ApiResult.Loading -> {
+                is ProductDetailUiState.Loading -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
-                is ApiResult.Success -> {
-                    ProductDetailContent(product = state.data)
+                is ProductDetailUiState.Success -> {
+                    ProductDetailContent(product = state.product)
                 }
-                is ApiResult.Error -> {
+                is ProductDetailUiState.Error -> {
                     Column(
                         modifier = Modifier.align(Alignment.Center),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(text = state.exception.toString(), color = MaterialTheme.colorScheme.error)
+                        Text(text = state.message, color = MaterialTheme.colorScheme.error)
                         Button(onClick = { viewModel.fetchProductDetails() }) {
                             Text(Constants.RETRY)
                         }
@@ -95,7 +89,6 @@ fun ProductDetailContent(product: Product) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ) {
-        // Image Carousel
         val pagerState = rememberPagerState(pageCount = { product.images.size })
         
         Box(
@@ -126,16 +119,12 @@ fun ProductDetailContent(product: Product) {
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(text = Constants.FAILED_TO_LOAD)
-                            Log.e("ProductDetailScreen", "Failed to load image: $imageUrl, reason: ${state.reason}")
-                            state.reason?.let { 
-                                Log.e("ProductDetailScreen", "Error message: ${it.message}", it)
-                            }
+                            Log.e("ProductDetailScreen", "Failed to load image: $imageUrl")
                         }
                     }
                 )
             }
             
-            // Pager Indicator
             Row(
                 Modifier
                     .height(50.dp)

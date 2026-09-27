@@ -17,8 +17,4 @@ interface ProductApi {
     suspend fun getProductDetails(
         @Path("productId") productId: Int
     ): SingleProductResponse
-
-    companion object {
-        const val BASE_URL = "https://api.freeapi.app/api/v1/"
-    }
 }

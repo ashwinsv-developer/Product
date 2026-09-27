@@ -1,10 +1,7 @@
 package com.product.di
 
+import com.product.BuildConfig
 import com.product.data.remote.ProductApi
-import com.product.domain.repository.ProductRepository
-import com.product.data.repository.product.ProductRepositoryImpl
-import com.product.domain.repository.ProductDetailRepository
-import com.product.data.repository.productDetail.ProductDetailRepositoryImpl
 import com.product.network.RetryInterceptor
 import dagger.Module
 import dagger.Provides
@@ -32,26 +29,29 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder()
+        val builder = OkHttpClient.Builder()
             .addInterceptor(RetryInterceptor(3))
-            .addInterceptor(HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            })
-            .build()
+
+        // Logging only in debug builds (avoids leaking PII / bodies in release)
+        if (BuildConfig.DEBUG) {
+            builder.addInterceptor(
+                HttpLoggingInterceptor().apply {
+                    level = HttpLoggingInterceptor.Level.BODY
+                }
+            )
+        }
+        return builder.build()
     }
 
     @Provides
     @Singleton
-    fun provideProductApi(retrofit: Retrofit): ProductApi {
-        return retrofit.create(ProductApi::class.java)
-    }
-
-    @Provides
-    @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient, json: Json): Retrofit {
+    fun provideRetrofit(
+        okHttpClient: OkHttpClient,
+        json: Json
+    ): Retrofit {
         val contentType = "application/json".toMediaType()
         return Retrofit.Builder()
-            .baseUrl(ProductApi.BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(json.asConverterFactory(contentType))
             .build()
@@ -59,13 +59,6 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideProductRepository(api: ProductApi): ProductRepository {
-        return ProductRepositoryImpl(api)
-    }
-
-    @Provides
-    @Singleton
-    fun provideProductDetailRepository(api: ProductApi): ProductDetailRepository {
-        return ProductDetailRepositoryImpl(api)
-    }
+    fun provideProductApi(retrofit: Retrofit): ProductApi =
+        retrofit.create(ProductApi::class.java)
 }

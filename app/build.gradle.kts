@@ -30,9 +30,12 @@ android {
 
 
     buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"https://api.freeapi.app/api/v1/\"")
+        }
         release {
             isMinifyEnabled = false
-
+            buildConfigField("String", "BASE_URL", "\"https://api.freeapi.app/api/v1/\"")
             proguardFiles(
                 getDefaultProguardFile(
                     "proguard-android-optimize.txt"

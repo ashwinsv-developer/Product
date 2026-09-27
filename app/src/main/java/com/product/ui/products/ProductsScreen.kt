@@ -9,11 +9,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.product.data.model.Product
-import com.product.di.ApiResult
 import com.product.ui.home.ProductItem
 import com.product.util.Constants
 
@@ -26,26 +23,26 @@ fun ProductsScreen(
 
     Column(modifier = Modifier.fillMaxSize()) {
         when (val state = uiState) {
-            is ApiResult.Loading -> {
+            is ProductsUiState.Loading -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
                 }
             }
-            is ApiResult.Success -> {
+            is ProductsUiState.Success -> {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(state.data, key = { it.id }) { product ->
+                    items(state.products, key = { it.id }) { product ->
                         ProductItem(product = product, onClick = { onProductClick(product.id) })
                     }
                 }
             }
-            is ApiResult.Error -> {
+            is ProductsUiState.Error -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(text = "Error: ${state.exception}", color = MaterialTheme.colorScheme.error)
+                        Text(text = "Error: ${state.message}", color = MaterialTheme.colorScheme.error)
                         Spacer(modifier = Modifier.height(8.dp))
                         Button(onClick = { viewModel.fetchProducts() }) {
                             Text(Constants.RETRY)

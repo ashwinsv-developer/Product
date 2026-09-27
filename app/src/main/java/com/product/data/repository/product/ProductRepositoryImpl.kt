@@ -1,68 +1,25 @@
 package com.product.data.repository.product
 
-import com.product.data.model.Product
+import com.product.data.mapper.toDomain
 import com.product.data.remote.ProductApi
-import com.product.di.ApiResult
+import com.product.domain.model.Product
 import com.product.domain.repository.ProductRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
+/**
+ * Implementation of ProductRepository that communicates with the API.
+ * Maps data layer models to domain layer models.
+ */
 class ProductRepositoryImpl @Inject constructor(
     private val api: ProductApi
 ) : ProductRepository {
 
-    override fun getProducts(): Flow<ApiResult<List<Product>>> =
-        flow {
-
-            emit(ApiResult.Loading)
-
-            try {
-
-                val response = api.getProducts()
-
-                if (response.success) {
-
-                    val products =
-                        response.data.data.map {
-                            it.fixUrls()
-                        }
-
-                    emit(
-                        ApiResult.Success(products)
-                    )
-
-                } else {
-
-                    emit(
-                        ApiResult.Error(
-                            Exception(response.message)
-                        )
-                    )
-                }
-
-            } catch (e: Exception) {
-
-                emit(
-                    ApiResult.Error(e)
-                )
-            }
+    override suspend fun getProducts(): Result<List<Product>> = runCatching {
+        val response = api.getProducts()
+        if (response.success) {
+            response.data.data.map { it.toDomain() }
+        } else {
+            throw Exception(response.message)
         }
-
-
-    private fun Product.fixUrls(): Product {
-        return copy(
-            thumbnail = thumbnail.fixUrl(),
-            images = images.map {
-                it.fixUrl()
-            }
-        )
-    }
-
-    private fun String.fixUrl(): String {
-        return replace(
-            "product-images",
-            "products/images"
-        )
     }
 }
