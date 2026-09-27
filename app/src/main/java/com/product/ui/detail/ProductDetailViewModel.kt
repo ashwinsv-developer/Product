@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.product.data.SessionManager
 import com.product.data.model.Product
-import com.product.data.repository.productDetail.ProductDetailRepository
+import com.product.domain.repository.ProductDetailRepository
 import com.product.di.ApiResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

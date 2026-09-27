@@ -2,6 +2,7 @@ package com.product.data.repository.user
 
 import com.product.data.local.dao.UserDao
 import com.product.data.local.entity.UserEntity
+import com.product.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

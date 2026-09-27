@@ -1,4 +1,4 @@
-package com.product.data.repository.product
+package com.product.domain.repository
 
 import com.product.data.model.Product
 import com.product.di.ApiResult

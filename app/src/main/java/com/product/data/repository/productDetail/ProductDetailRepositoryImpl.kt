@@ -3,6 +3,7 @@ package com.product.data.repository.productDetail
 import com.product.data.model.Product
 import com.product.data.remote.ProductApi
 import com.product.di.ApiResult
+import com.product.domain.repository.ProductDetailRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject

@@ -7,7 +7,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.product.data.local.AppDatabase
 import com.product.data.local.dao.MovieDao
 import com.product.data.local.dao.UserDao
-import com.product.data.repository.user.UserRepository
+import com.product.domain.repository.UserRepository
 import com.product.data.repository.user.UserRepositoryImpl
 import dagger.Module
 import dagger.Provides

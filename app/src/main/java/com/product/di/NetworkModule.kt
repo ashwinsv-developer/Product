@@ -1,9 +1,9 @@
 package com.product.di
 
 import com.product.data.remote.ProductApi
-import com.product.data.repository.product.ProductRepository
+import com.product.domain.repository.ProductRepository
 import com.product.data.repository.product.ProductRepositoryImpl
-import com.product.data.repository.productDetail.ProductDetailRepository
+import com.product.domain.repository.ProductDetailRepository
 import com.product.data.repository.productDetail.ProductDetailRepositoryImpl
 import com.product.network.RetryInterceptor
 import dagger.Module

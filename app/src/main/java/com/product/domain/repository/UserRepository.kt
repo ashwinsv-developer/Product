@@ -1,4 +1,4 @@
-package com.product.data.repository.user
+package com.product.domain.repository
 
 import com.product.data.local.entity.UserEntity
 import kotlinx.coroutines.flow.Flow
