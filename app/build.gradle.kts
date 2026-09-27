@@ -32,10 +32,14 @@ android {
     buildTypes {
         debug {
             buildConfigField("String", "BASE_URL", "\"https://api.freeapi.app/api/v1/\"")
+            buildConfigField("String", "BASE_LOCAL_URL", "\"http://127.0.0.1:8080/\"")
+            isMinifyEnabled = false
+            isDebuggable = true
         }
         release {
             isMinifyEnabled = false
             buildConfigField("String", "BASE_URL", "\"https://api.freeapi.app/api/v1/\"")
+            buildConfigField("String", "BASE_LOCAL_URL", "\"http://127.0.0.1:8080/\"")
             proguardFiles(
                 getDefaultProguardFile(
                     "proguard-android-optimize.txt"

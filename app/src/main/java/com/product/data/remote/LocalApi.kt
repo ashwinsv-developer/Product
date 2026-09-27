@@ -1,13 +1,12 @@
 package com.product.data.remote
 
-import retrofit2.http.GET
+import com.product.data.model.ProductResponse
+import com.product.data.model.login.LoginRequest
+import com.product.data.model.login.LoginResponse
+import retrofit2.http.Body
+import retrofit2.http.POST
 
 interface LocalApi {
-
-    @GET()
-    suspend fun login ()
-
-    companion object {
-        const val BASE_URL = "http://127.0.0.1:8080/"
-    }
+    @POST("api/login")
+    suspend fun login(@Body request: LoginRequest): LoginResponse
 }

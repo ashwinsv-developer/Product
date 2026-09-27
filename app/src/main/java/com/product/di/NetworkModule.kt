@@ -1,6 +1,7 @@
 package com.product.di
 
 import com.product.BuildConfig
+import com.product.data.remote.LocalApi
 import com.product.data.remote.ProductApi
 import com.product.network.RetryInterceptor
 import dagger.Module
@@ -15,6 +16,17 @@ import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import javax.inject.Singleton
 
+
+
+import javax.inject.Qualifier
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class RemoteRetrofit
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class LocalRetrofit
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
@@ -42,7 +54,7 @@ object NetworkModule {
         }
         return builder.build()
     }
-
+    @RemoteRetrofit
     @Provides
     @Singleton
     fun provideRetrofit(
@@ -59,6 +71,27 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideProductApi(retrofit: Retrofit): ProductApi =
+    fun provideProductApi(@RemoteRetrofit  retrofit: Retrofit): ProductApi =
         retrofit.create(ProductApi::class.java)
+
+    @LocalRetrofit
+    @Provides
+    @Singleton
+    fun provideLocalRetrofit(
+        okHttpClient: OkHttpClient,
+        json: Json
+    ): Retrofit {
+        val contentType = "application/json".toMediaType()
+        return Retrofit.Builder()
+            .baseUrl(BuildConfig.BASE_LOCAL_URL)
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory(contentType))
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocalApi(@LocalRetrofit retrofit: Retrofit): LocalApi =
+        retrofit.create(LocalApi::class.java)
+
 }

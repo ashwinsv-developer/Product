@@ -6,13 +6,15 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.product.data.SessionManager
+import com.product.domain.usecase.login.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val sessionManager: SessionManager
+    private val sessionManager: SessionManager,
+    private  val usecase : LoginUseCase
 ) : ViewModel() {
 
     var email by mutableStateOf("")
@@ -45,10 +47,14 @@ class LoginViewModel @Inject constructor(
         val isPasswordValid = validatePassword(password)
 
         if (isEmailValid && isPasswordValid) {
-            viewModelScope.launch {
+        viewModelScope.launch {
+            usecase(email, password).onSuccess { it ->
                 sessionManager.saveSession(email)
                 isSuccess = true
+            }.onFailure {
+                isSuccess = false
             }
+        }
         }
     }
 
