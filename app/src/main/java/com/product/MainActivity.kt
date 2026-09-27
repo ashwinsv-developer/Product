@@ -53,9 +53,9 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val startDestination =
                     if (isLoggedIn) {
-                        Home
+                        com.product.navigation.Main
                     } else {
-                        Login
+                        com.product.navigation.Login
                     }
                 AppNavGraph(
                     navController = navController,

@@ -9,6 +9,7 @@ import com.product.ui.detail.ProductDetailScreen
 import com.product.ui.home.HomeScreen
 import com.product.ui.login.LoginScreen
 import com.product.ui.createUser.CreateUser
+import com.product.ui.main.MainScreen
 
 @Composable
 fun AppNavGraph(
@@ -23,7 +24,7 @@ fun AppNavGraph(
         composable<Login> {
             LoginScreen(
                 onLoginSuccess = {
-                    navController.navigate(Home) {
+                    navController.navigate(Main) {
                         popUpTo<Login> {
                             inclusive = true
                         }
@@ -41,7 +42,7 @@ fun AppNavGraph(
                     navController.popBackStack()
                 },
                 onSuccess = {
-                    navController.navigate(Home) {
+                    navController.navigate(Main) {
                         popUpTo<CreateUser> {
                             inclusive = true
                         }
@@ -50,22 +51,19 @@ fun AppNavGraph(
             )
         }
 
-        composable<Home> {
-            HomeScreen(
+        composable<Main> {
+            MainScreen(
+                rootNavController = navController,
                 onLogout = {
                     navController.navigate(Login) {
-                        popUpTo<Home> {
+                        popUpTo<Main> {
                             inclusive = true
                         }
                     }
-                },
-                onProductClick = { productId ->
-                    navController.navigate(
-                        ProductDetail(productId)
-                    )
                 }
             )
         }
+
 
         composable<ProductDetail> { backStackEntry ->
 
